@@ -5,15 +5,24 @@ using TMPro;
 
 public class Timer : MonoBehaviour
 {
-    [SerializeField] private int sec;
+    public static int sec;
     [SerializeField] private int min;
-    public static TMP_Text timer;
+    private TMP_Text timer;
     [SerializeField] private int delta;
+    public static string time;
+    
 
     void Start()
     {
         timer = GameObject.Find("TimerText").GetComponent<TMP_Text>();
         StartCoroutine(TimeScaler());
+        
+    }
+
+    private void Update()
+    {
+        time = timer.text;
+        
     }
 
     IEnumerator TimeScaler()
@@ -25,8 +34,13 @@ public class Timer : MonoBehaviour
                 min--;
                 sec = 60;
             }
+            if (sec > 60)
+            {
+                min++;
+                sec -= 60;
+            }
             sec -= delta;
-            timer.text = min.ToString("D2") + ':' + sec.ToString("D2");
+            timer.text = min.ToString("D2") + ":" + sec.ToString("D2");
             yield return new WaitForSeconds(1f);
         }
     }

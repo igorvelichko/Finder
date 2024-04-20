@@ -1,32 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
 public class Restart : MonoBehaviour
 {
-    private GameObject BackImage;
-    private readonly Timer timer;
-    private TMP_Text time;
-
+    public GameObject LozeImage;
+    public GameObject WinImage;
 
     private void Start()
     {
-        time = timer.GetComponent<TMP_Text>();
+        Time.timeScale = 1;
     }
 
-    void Update()
+    void LateUpdate()
     {
-        if(time.text == "00:00")
-        {
-            BackImage.SetActive(true);
-        }
+        if (Timer.time == "00:00")
+            Restloze();
+        else if (Click.countfind == 10)
+            Restwin();
     }
 
-    public void Rest()
+    public void Restloze()
+    {
+        Time.timeScale = 0;
+
+        LozeImage.SetActive(true);
+    }
+
+    public void Restwin()
+    {
+        Time.timeScale = 0;
+
+        WinImage.SetActive(true);
+    }
+
+    public void RestBut()
     {
         SceneManager.LoadScene(0);
+        Progress.lvlcount += 1;
+        Click.countfind = 0;
+        PlayerPrefs.SetInt("Lvl", Progress.lvlcount);
     }
 }
