@@ -1,36 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
-using AppodealAds.Unity.Api;
-using AppodealAds.Unity.Common;
+using UnityEngine.AddressableAssets;
+using UnityEngine.SceneManagement;
 
 public class AppodealManager : MonoBehaviour
 {
-    private const string APP_KEY = "95b220c39e6b72809ce1fc855ee7bff960eae4716faef3f9";
-    [SerializeField] private bool isTesting;
 
-    private void Start()
+    private GameObject _cachad;
+
+    protected async Task<T> LoadIntenal<T>(string assetID)
     {
-        Initialization();
+        var handle = Addressables.InstantiateAsync(assetID);
+        _cachad = await handle.Task;
+        if (_cachad.TryGetComponent(out T SampleScene))
+            Debug.Log("Warm");
+        return SampleScene;
     }
 
-    public void ShowInterAbs()
+    protected void UnloadInternal()
     {
-        if (Appodeal.canShow(Appodeal.INTERSTITIAL))
-            Appodeal.show(Appodeal.INTERSTITIAL);
+        if (_cachad == false)
+            return;
+        _cachad.SetActive(false);
+        Addressables.ReleaseInstance(_cachad);
+        _cachad = null;
     }
-
-    private void Initialization()
-    {
-        Appodeal.setTesting(isTesting);
-
-        Appodeal.disableLocationPermissionCheck();
-
-        Appodeal.muteVideosIfCallsMuted(true);
-
-        Appodeal.initialize(APP_KEY, Appodeal.INTERSTITIAL);
-    }
-
-
-
 }
